@@ -26,10 +26,10 @@ api.login_user('name', 'password')
 api.update_avatar('0010999912')
 ```
 ####Demo
-This [Quizduell Bot](http://quizduellbot.appspot.com) is based on this project. It automatically sends and answers game requests, writes messages and always plays a perfect game.
+[This Quizduell Bot](http://quizduellbot.appspot.com) is based on this project. It automatically sends and answers game requests, writes messages and always plays a perfect game.
 
 ####Credits
 Thanks to the blogger and commenters on [easysurfer.me](http://easysurfer.me/wordpress/?p=761) for their insights!
 
 ####Disclaimer
-This project is in no way affiliated with, authorized, maintained, sponsored or endorsed by FEO Media AB.
+Quizduell is a registered trademark of FEO Media AB, Stockholm, SE registered in Germany and other countries. This project is an independent work and is in no way affiliated with, authorized, maintained, sponsored or endorsed by FEO Media AB.
