@@ -26,7 +26,7 @@ api.login_user('name', 'password')
 api.update_avatar('0010999912')
 ```
 ####Demo
-[This Quizduell Bot](http://quizduellbot.appspot.com) is based on this project. It automatically sends and answers game requests, writes messages and always plays a perfect game.
+[The Quizduell Bot](http://quizduellbot.appspot.com) is based on this project. It automatically sends and answers game requests, writes messages and always plays a perfect game.
 
 ####Credits
 Thanks to the blogger and commenters on [easysurfer.me](http://easysurfer.me/wordpress/?p=761) for their insights!
