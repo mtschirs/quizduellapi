@@ -1,6 +1,5 @@
 #Quizduell API
-
-Interface to the Quizduell web API written in Python and distributed under GPLv3. Start games, answer questions, read user statistics and more.
+Inofficial interface to the Quizduell web API written in Python and distributed under GPLv3. Start games, answer questions, read user statistics and more.
 
 ####Example 1 - Statistics
 The following code authenticates a Quizduell user and retrieves some statistics:
