@@ -13,7 +13,7 @@ else:
     api.login_user('name', 'password')
 
 api = quizduell.QuizduellApi(cookie_jar)
-result = api.category_stats()
+result = api.top_list_rating()
 
 if 'access' in result:
     # Session timed out, re-login:

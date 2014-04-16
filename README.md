@@ -1,28 +1,31 @@
 #Quizduell API
-Inofficial interface to the Quizduell web API written in Python and distributed under GPLv3. Start games, answer questions, read user statistics and more.
+Inofficial interface to the Quizduell web API written in Python and distributed under GPLv3. Start games, write messages, find users and more.
 
-####Example 1 - Statistics
-The following code authenticates a Quizduell user and retrieves some statistics:
+####Example 1 - Find User
+The following code authenticates a Quizduell user and performs a username lookup for 'peter':
 ```python
 api = quizduell.QuizduellApi()
 api.login_user('name', 'password')
-stats = api.category_stats()
+stats = api.find_user('peter')
 ```
 Return values are in JSON:
 ```python
 {
-  "cat_stats": [{"cat_name": "Wunder der Technik", "percent": 0.74}, ...],
-  "n_perfect_games": 1, 
-  "n_games_lost": 0, 
-  ...
+  "u": {
+    "avatar_code": null, 
+    "facebook_id": "1000...", 
+    "name": "Peter", 
+    "user_id": "5455..."
+  }
 }
+
 ```
-####Example 2 - Avatar
-The following code changes the user's avatar to a skin colored avatar wearing a crown:
+####Example 2 - Top Ten
+The following code retrieves a list of Quizduell users with the highest ranking:
 ```python
 api = quizduell.QuizduellApi()
 api.login_user('name', 'password')
-api.update_avatar('0010999912')
+rating = api.top_list_rating()
 ```
 ####Demo
 [This bot for Quizduell](http://quizgamebot.appspot.com) is based on this project. It automatically sends and answers game requests, writes messages and plays on beginner, advanced and expert level.
