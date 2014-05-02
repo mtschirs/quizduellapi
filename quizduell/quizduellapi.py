@@ -9,8 +9,8 @@ import datetime
 class QuizduellApi(object):
     '''
     Inofficial interface to the Quizduell web API written in Python and
-    distributed under GPLv3. Start games, answer questions, read user
-    statistics and more.
+    distributed under GPLv3. Start games, answer questions, find users and
+    more.
     
     Quizduell is a registered trademark of FEO Media AB, Stockholm, SE
     registered in Germany and other countries. This project is an independent
@@ -25,6 +25,8 @@ class QuizduellApi(object):
     '''7GprrSCirEToJjG5 for iOS, irETGpoJjG57rrSC for Android'''
     
     user_agent = 'Quizduell A 1.3.2'
+    
+    device_type = 'a'
 
     timeout = 20000
     
@@ -35,8 +37,8 @@ class QuizduellApi(object):
     the user supplied cookie jar or a subsequent call to
     QuizduellApi.login_user() or QuizduellApi.create_user().
     
-    @param cookie_jar: Stores authentication tokens with each request made to the API
-    @type cookie_jar: cookielib.CookieJar
+    @param cookie_jar: Stores authentication tokens with each request made
+    @type cookie_jar: cookielib.CookieJar or None
     '''
     def __init__(self, cookie_jar=None):
         self._opener = urllib2.build_opener(
@@ -69,7 +71,7 @@ class QuizduellApi(object):
             data['email'] = unicode(email).encode('utf-8')
         
         return self._request('/users/create', data)
-
+    
     def login_user(self, name, password):
         '''
         Authenticates an existing Quizduell user. @attention: Any user can only
@@ -107,11 +109,11 @@ class QuizduellApi(object):
         @rtype: json.json
         '''
         data = {
-            'name': name,
-            'pwd': hashlib.md5(self.password_salt + password).hexdigest()
+            'name': unicode(name).encode('utf-8'),
+            'pwd': hashlib.md5(self.password_salt + unicode(password).encode('utf-8')).hexdigest()
         }
         if email != None:
-            data['email'] = email
+            data['email'] = unicode(email).encode('utf-8')
         
         return self._request('/users/update_user', data)
         
@@ -140,7 +142,7 @@ class QuizduellApi(object):
         Adds another Quizduell user as a friend. Returns the following
         JSON structure on success:
         {
-            "popup_mess": "Du bist jetzt mit user98736 befreundet", 
+            "popup_mess": "Du bist jetzt mit ... befreundet", 
             "popup_title": "Neuer Freund"
         }
         
@@ -321,12 +323,12 @@ class QuizduellApi(object):
         structure on success:
         {
             "game_stats": [{
-                "avatar_code": "0010009909", 
-                "n_games_lost": 2, 
-                "n_games_tied": 2, 
-                "n_games_won": 0, 
-                "name": "KY Lee", 
-                "user_id": "5985409884487680"
+                "avatar_code": "...", 
+                "n_games_lost": ..., 
+                "n_games_tied": ..., 
+                "n_games_won": ..., 
+                "name": "...", 
+                "user_id": "..."
             }, ...],
         }
         
@@ -348,6 +350,14 @@ class QuizduellApi(object):
         @rtype: json.json
         '''
         return self._request('/web/cats')
+    
+    def num_players(self):
+        '''
+        Lists the number of Quizduell players.
+        
+        @rtype: int
+        '''
+        return self._request('/web/num_players')
     
     def top_list_rating(self):
         '''
@@ -372,9 +382,9 @@ class QuizduellApi(object):
         structure on success:
         {
             "users": [{
-                "avatar_code": "0010035604", 
-                "n_approved_questions": 192, 
-                "name": "Zwaanswijk"
+                "avatar_code": "...", 
+                "n_approved_questions": ..., 
+                "name": "..."
             }, ...]
         }
         
@@ -438,7 +448,7 @@ class QuizduellApi(object):
         {
             "game": {...}, 
             "popup": {
-                "popup_mess": "Du hast gegen user98732 aufgegeben\n\nRating: -24", 
+                "popup_mess": "Du hast gegen ... aufgegeben\n\nRating: -24", 
                 "popup_title": "Spiel beendet"
             }
         }
@@ -571,7 +581,7 @@ class QuizduellApi(object):
         client_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
         self._opener.addheaders = [
-           ('dt', 'a'),
+           ('dt', self.device_type),
            ('authorization', self._get_authorization_code(url, client_date, post_params)),
            ('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8'),
            ('User-Agent', self.user_agent),
