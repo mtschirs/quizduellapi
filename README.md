@@ -27,8 +27,6 @@ api = quizduell.QuizduellApi()
 api.login_user('name', 'password')
 rating = api.top_list_rating()
 ```
-####Demo
-[This bot for Quizduell](http://quizgamebot.appspot.com) is based on this project. It automatically sends and answers game requests, writes messages and plays on beginner, advanced and expert level.
 
 ####Credits
 Thanks to the blogger and commenters on [easysurfer.me](http://easysurfer.me/wordpress/?p=761) for their insights!
