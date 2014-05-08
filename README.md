@@ -33,8 +33,7 @@ The following code displays the time until the next Quizduell TV show (Germany o
 ```python
 tv_api = quizduell.QuizduellTvApi(user_id)
 state = tv_api.get_state()
-print 'Next show:', datetime.fromtimestamp(state['Meta']['NextShowDate']).strftime("%d.%m.%Y %H:%M:%S")
-
+print 'Next show:', datetime.datetime.fromtimestamp(state['Meta']['NextShowDate'])
 ```
 
 ####Demo
