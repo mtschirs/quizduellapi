@@ -28,7 +28,6 @@ api.login_user('name', 'password')
 rating = api.top_list_rating()
 ```
 
-```
 ####Example 3 - Time till next show
 The following code displays the time until the next Quizduell TV show (Germany only):
 ```python
