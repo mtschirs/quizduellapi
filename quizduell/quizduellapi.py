@@ -32,15 +32,15 @@ class QuizduellApi(object):
     
     password_salt = 'SQ2zgOTmQc8KXmBP'
     
-    '''
-    Creates the API interface. Expects either an authentication cookie within
-    the user supplied cookie jar or a subsequent call to
-    QuizduellApi.login_user() or QuizduellApi.create_user().
-    
-    @param cookie_jar: Stores authentication tokens with each request made
-    @type cookie_jar: cookielib.CookieJar or None
-    '''
     def __init__(self, cookie_jar=None):
+        '''
+        Creates the API interface. Expects either an authentication cookie within
+        the user supplied cookie jar or a subsequent call to
+        QuizduellApi.login_user() or QuizduellApi.create_user().
+        
+        @param cookie_jar: Stores authentication tokens with each request made
+        @type cookie_jar: cookielib.CookieJar or None
+        '''
         self._opener = urllib2.build_opener(
             urllib2.HTTPRedirectHandler(),
             urllib2.HTTPHandler(debuglevel=0),
@@ -116,7 +116,29 @@ class QuizduellApi(object):
             data['email'] = unicode(email).encode('utf-8')
         
         return self._request('/users/update_user', data)
-        
+
+    def create_tv_user(self):
+        '''
+        Creates a TV user profile for this Quizduell user. Returns the following
+        JSON structure on success:
+        {
+            "user": {
+                "avatar_code": ..., 
+                "blocked": [...], 
+                "email": ..., 
+                "friends": [...], 
+                "name": "...", 
+                "q_reviewer": ..., 
+                "qc": ..., 
+                "tt": "...", 
+                "user_id": "..."
+            }
+        }
+
+        @rtype: json.json
+        '''
+        return self._request('/tv/create_tv_user', {})
+    
     def find_user(self, name):
         '''
         Looks for a Quizduell user with the given name. Returns the following
