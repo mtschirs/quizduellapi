@@ -1,7 +1,30 @@
 #Quizduell API
 Inofficial interface to the Quizduell web API written in Python and distributed under GPLv3. Start games, write messages, find users and more.
 
-####Example 1 - Find User
+####Example 1 - Statistics
+The following code authenticates a Quizduell user and retrieves some statistics:
+```python
+api = quizduell.QuizduellApi()
+api.login_user('name', 'password')
+stats = api.category_stats()
+```
+Return values are in JSON:
+```python
+{
+  "cat_stats": [{"cat_name": "Wunder der Technik", "percent": 0.74}, ...],
+  "n_perfect_games": 1, 
+  "n_games_lost": 0, 
+  ...
+}
+```
+####Example 2 - Avatar
+The following code changes the user's avatar to a skin colored avatar wearing a crown:
+```python
+api = quizduell.QuizduellApi()
+api.login_user('name', 'password')
+api.update_avatar('0010999912')
+```
+####Example 3 - Find User
 The following code authenticates a Quizduell user and performs a username lookup for 'peter':
 ```python
 api = quizduell.QuizduellApi()
@@ -20,7 +43,7 @@ Return values are in JSON:
 }
 
 ```
-####Example 2 - Top Ten
+####Example 4 - Top Ten
 The following code retrieves a list of Quizduell users with the highest ranking:
 ```python
 api = quizduell.QuizduellApi()
@@ -28,7 +51,7 @@ api.login_user('name', 'password')
 rating = api.top_list_rating()
 ```
 
-####Example 3 - Time till next show
+####Example 5 - Time till next show
 The following code displays the time until the next Quizduell TV show (Germany only):
 ```python
 tv_api = quizduell.QuizduellTvApi(user_id)
