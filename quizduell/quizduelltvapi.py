@@ -21,22 +21,55 @@ class QuizduellTvApi(object):
     
     timeout = 20000
     
-    def __init__(self, user_id):
+    def __init__(self, user_id, tv_auth_token='0'):
         '''
         Creates the TV API interface. The user identified by the supplied user
         id must have a TV profile created by a call to
-        QuizduellApi.create_tv_user().
+        QuizduellApi.create_tv_user(). The TV auth token is required for voting
+        only and is found in the TV user profile or the json return value of
+        QuizduellApi.create_tv_user(). If not set, calls to
+        QuizduellTVApi.send_response() will fail.
         
-        @param user_id: quizduell user id
+        @param user_id: Quizduell user id
         @type user_id: str
-        '''
+        
+        @param tv_auth_token: TV auth token for voting e.g. returned by
+                              QuizduellApi.create_tv_user()
+        @type tv_auth_token: str
+        ''' 
         self._user_id = user_id
-        self._auth_token = '...'
+        self._tv_auth_token = tv_auth_token
         self._opener = urllib2.build_opener(
             urllib2.HTTPRedirectHandler(),
             urllib2.HTTPHandler(debuglevel=0),
             urllib2.HTTPSHandler(debuglevel=0)
         )
+
+    @classmethod
+    def fromQuizduellApi(cls, quizduell_api):
+        '''
+        Creates the TV API interface from an authenticated quizduell API 
+        instance.
+        
+        @param quizduell_api: authenticated Quizduell API instance (logged in)
+        @type quizduell_api: QuizduellApi
+        '''
+        tv_user = quizduell_api.create_tv_user()
+        return cls(tv_user['user']['user_id'], tv_user['user']['tt'])
+     
+    @classmethod
+    def fromUserProfile(cls, user_id):
+        '''
+        Creates the TV API interface from the user_id alone. The user must 
+        already have a TV user profile, otherwise this method will fail.
+        
+        @param user_id: Quizduell user id
+        @type user_id: str
+        '''
+        tv_api = QuizduellTvApi(user_id, '123')
+        profile = tv_api.get_profile()
+        tv_auth_token = profile['UserProfile']['TvAuthToken']
+        return cls(user_id, tv_auth_token)
     
     def agree_agbs(self):
         '''
@@ -219,7 +252,7 @@ class QuizduellTvApi(object):
     
         request = urllib2.Request('https://' + self.host_name + url)
         request.add_header('x-app-request', self.app_request)
-        request.add_header('x-tv-authtoken', self._auth_token)
+        request.add_header('x-tv-authtoken', self._tv_auth_token)
         
         if method == 'POST':
             if data:
