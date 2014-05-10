@@ -66,7 +66,7 @@ class QuizduellTvApi(object):
         @param user_id: Quizduell user id
         @type user_id: str
         '''
-        tv_api = QuizduellTvApi(user_id, '123')
+        tv_api = QuizduellTvApi(user_id)
         profile = tv_api.get_profile()
         tv_auth_token = profile['UserProfile']['TvAuthToken']
         return cls(user_id, tv_auth_token)

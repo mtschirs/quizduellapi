@@ -1,7 +1,7 @@
 import quizduell
 
 api = quizduell.QuizduellApi()
-result = api.create_user('Max Mustermann', 'max@mustermann.com', 'password')
+user = api.create_user('Max Mustermann', 'password', 'max@mustermann.com')
 
-if 'popup_mess' in result: 
-    print 'Error:', result['popup_mess']
+if 'popup_mess' in user: 
+    print 'Error:', user['popup_mess']
