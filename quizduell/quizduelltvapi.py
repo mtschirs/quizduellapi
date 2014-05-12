@@ -227,10 +227,10 @@ class QuizduellTvApi(object):
         return self._request('/users/' + self._user_id + '/avatarandnick', data)
     
     def send_response(self, round_id, question_id, answer_id):
-        return self._request('/users/' + self._user_id + '/response' + question_id + '/' + answer_id)
+        return self._request('/users/' + self._user_id + '/response/' + question_id + '/' + answer_id)
 
     def select_category(self, category_id):
-        return self._request('/users/' + self._user_id + '/category' + category_id)
+        return self._request('/users/' + self._user_id + '/category/' + category_id)
     
     def get_state(self):
         '''
