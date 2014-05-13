@@ -207,7 +207,7 @@ class QuizduellTvApi(object):
             'AvatarString': avatar_code,
             'Nick': unicode(nick).encode('utf-8')
         }
-        return self._request('/users/' + self._user_id + '/avatarandnick', data)
+        return self._request('/users/' + self._user_id + '/avatarandnick', 'POST', data)
     
     def send_response(self, round_id, question_id, answer_id):
         return self._request('/users/' + self._user_id + '/response/' + question_id + '/' + answer_id)
