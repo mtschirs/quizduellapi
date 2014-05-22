@@ -59,9 +59,7 @@ rating = api.top_list_rating()
 ####Example 5 - Time till next show
 The following code displays the time until the next Quizduell TV show (Germany only):
 ```python
-api = quizduell.QuizduellApi()
-api.login_user('name', 'password')
-tv_api = quizduell.QuizduellTvApi.fromQuizduellApi(api)
+tv_api = quizduell.QuizduellTvApi()
 state = tv_api.get_state()
 print 'Next show:', datetime.datetime.fromtimestamp(state['Meta']['NextShowDate'])
 ```

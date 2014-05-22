@@ -19,7 +19,7 @@ class QuizduellApi(object):
     '''
     
     host_name = 'qkgermany.feomedia.se'
-    '''Each country uses a different host'''
+    ''' Also try qkgermany.appspot.com. Each country uses a different host'''
         
     authorization_key = 'irETGpoJjG57rrSC'
     '''7GprrSCirEToJjG5 for iOS, irETGpoJjG57rrSC for Android'''
@@ -92,7 +92,7 @@ class QuizduellApi(object):
             'pwd': hashlib.md5(self.password_salt + unicode(password).encode('utf-8')).hexdigest()
         }
         return self._request('/users/login', data)
-    
+        
     def update_user(self, name, password, email=None):
         '''
         Updates an existing Quizduell user. The user will automatically be

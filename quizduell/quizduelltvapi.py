@@ -14,14 +14,14 @@ class QuizduellTvApi(object):
     '''
     
     host_name = 'quizduell.mobilemassresponse.de'
-    ''' API endpoing '''
+    ''' Also try tvqd-gcx.appspot.com. API endpoint '''
     
     app_request = 'grandc3ntr1xrul3z'
     ''' HTTP CORS header token '''
     
     timeout = 20000
     
-    def __init__(self, user_id, tv_auth_token):
+    def __init__(self, user_id='0', tv_auth_token='0'):
         '''
         Creates the TV API interface. The user identified by the supplied user
         id must have a TV profile created by a call to
@@ -54,9 +54,10 @@ class QuizduellTvApi(object):
         tv_user = quizduell_api.create_tv_user()
         return cls(tv_user['user']['user_id'], tv_user['user']['tt'])
     
-    def agree_agbs(self):
+    def agree_agbs(self, agree=True):
         '''
         Agrees to the AGB of the TV application.
+        Returns the following JSON structure on success:
         {
             "FeoUser": {
                 "AgreedAgbs": true, 
@@ -69,11 +70,12 @@ class QuizduellTvApi(object):
             "Status": 200
         }
         '''
-        return self._request('/feousers/agbs/' + self._user_id + '/true', method='POST')
+        return self._request('/feousers/agbs/' + self._user_id + ('/true' if agree else '/false'), method='POST')
     
     def get_rankings(self):
         '''
         Retrieves the TV user ranking.
+        Returns the following JSON structure on success:
         {
             "Count": ..., 
             "MyPoints": ..., 
@@ -91,117 +93,38 @@ class QuizduellTvApi(object):
         {
             "FeoUser": {
                 "AgreedAgbs": ..., 
-                "AvatarString": "", 
+                "AvatarString": "...", 
                 "IsRegistered": ..., 
                 "Nick": "...", 
+                "Sex": "...", 
                 "Uid": "...", 
-                "Updated": ...
-            }, 
-            "Status": 200, 
-            "UserProfile": {
-                "AgreedAgbs": ..., 
-                "AgreedContest": ..., 
-                "AgreedUsageTerms": ..., 
-                "AndroidRegId": "...", 
-                "ApnsToken": "", 
-                "AvatarString": "", 
-                "Birthdate": ..., 
-                "Country": "...", 
-                "Created": ..., 
-                "Email": "...", 
-                "FeoNick": "...", 
-                "FeoUid": "...", 
-                "Firstname": "...", 
-                "HasProfileImage": ..., 
-                "Lastname": "...", 
-                "ProfileImage": "", 
-                "ProfileImageContentType": "", 
-                "Sex": "male", 
-                "TvAuthToken": "...", 
                 "Updated": ..., 
                 "Zip": "..."
-            }
-        }
-        '''
-        return self._request('/users/profiles/' + self._user_id)
-    
-    def post_profile(self, firstname='', lastname='', email='', country='XX',
-                     zipcode='', sex='', birthdate=0, agree_contest=True,
-                     agree_terms=True):
-        '''
-        Sets the TV user profile.
-        Returns the following JSON structure on success (@see get_profile):
-        {
-            "FeoUser": {...}, 
-            "Status": 200, 
-            "UserProfile": {...}
-        }
-        
-        @param county: one of 'DE', 'AT', 'CH' or 'XX'
-        @type county: str
-        
-        @param sex: one of 'male' or 'female'
-        @type county: str
-        
-        @rtype: json.json
-        '''
-        data = {
-            'Firstname': firstname,
-            'Lastname': lastname,
-            'Email': email,
-            'Country' : country,
-            'Zip': zipcode,
-            'Sex': sex,
-            'Birthdate': birthdate,
-            'AgreedContest': agree_contest,
-            'AgreedUsageTerms': agree_terms
-        }
-        
-        return self._request('/users/profiles/' + self._user_id, 'POST', data)
-
-    def upload_profile_image(self, fileame):
-        '''
-        Uploads and sets a new TV user profile image (JPEG format).
-        Returns the following JSON structure on success (@see get_profile):
-        {
-            "FeoUser": {...}, 
-            "Status": 200, 
-            "UserProfile": {...}
-        }
-        
-        @param filename: JPEG filename
-        @type filename: str
-        
-        @rtype: json.json
-        '''
-        with open(fileame, 'rb') as f:
-            image = f.read().encode('base64')
-        
-        return self._request('/users/base64/' + self._user_id + '/jpg', 'POST',
-                             image, urlencode=False)
-
-    def delete_profile(self):
-        '''
-        Delete the TV user profile.
-        Returns the following JSON structure on success:
-        {
-            "FeoUser": {
-                "AgreedAgbs": ..., 
-                "AvatarString": "...", 
-                "IsRegistered": false, 
-                "Nick": "...", 
-                "Uid": "...", 
-                "Updated": ...
             }, 
             "Status": 200
         }
         '''
-        return self._request('/users/profiles/' + self._user_id, 'DELETE')
+        return self._request('/users/profiles/' + self._user_id)
     
     def set_avatar_and_nick(self, nick, avatar_code=''):
         '''
         Has no impact on the Quizduell nick and avatar and will automatically
         be reverted on startup of the Quizduell TV app.
+        Returns the following JSON structure on success:
+        {
+            "FeoUser": {
+                "AgreedAgbs": ..., 
+                "AvatarString": "...", 
+                "IsRegistered": ..., 
+                "Nick": "...", 
+                "Sex": "...", 
+                "Uid": "...", 
+                "Updated": ..., 
+                "Zip": "..."
+            }, 
+            "Status": 200, 
+            "UserProfile": { ... }
+        }
         '''
         data = {
             'AvatarString': avatar_code,
@@ -209,7 +132,7 @@ class QuizduellTvApi(object):
         }
         return self._request('/users/' + self._user_id + '/avatarandnick', 'POST', data)
     
-    def send_response(self, round_id, question_id, answer_id):
+    def send_response(self, question_id, answer_id):
         return self._request('/users/' + self._user_id + '/response/' + question_id + '/' + answer_id)
 
     def select_category(self, category_id):
@@ -218,6 +141,7 @@ class QuizduellTvApi(object):
     def get_state(self):
         '''
         Retrieves the current state of the TV quiz (countdown / running...).
+        Doesn't require a valid user-id or TV-authtoken.
         Returns e.g. the following JSON structure:
         {
             "Interval": 2, 

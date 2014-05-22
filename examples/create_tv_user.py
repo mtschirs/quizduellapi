@@ -11,4 +11,3 @@ if 'popup_mess' in user:
 # Instantiation of the Quizduell TV API from authenticated Quizduell API:
 tv_api = quizduell.QuizduellTvApi.fromQuizduellApi(api)
 tv_api.agree_agbs()
-tv_api.post_profile('Max', 'Mustermann', 'max@mustermann.com', 'DE')

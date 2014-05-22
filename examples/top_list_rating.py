@@ -16,7 +16,7 @@ api = quizduell.QuizduellApi(cookie_jar)
 result = api.top_list_rating()
 
 if 'access' in result:
-    # Session timed out, re-login:
+    # Session invalid, re-login:
     api.login_user('name', 'password')
     result = api.top_list_rating()
 
@@ -24,5 +24,3 @@ if 'access' in result:
 cookie_jar.save()
 
 print json.dumps(result, sort_keys=True, indent=4)
-
-
