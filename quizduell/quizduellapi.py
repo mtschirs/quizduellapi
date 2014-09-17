@@ -5,6 +5,7 @@ import hmac
 import hashlib
 import base64
 import datetime
+import re
 
 class QuizduellApi(object):
     '''
@@ -21,12 +22,11 @@ class QuizduellApi(object):
     host_name = 'qkgermany.feomedia.se'
     ''' Also try qkgermany.appspot.com. Each country uses a different host'''
         
-    authorization_key = 'irETGpoJjG57rrSC'
-    '''7GprrSCirEToJjG5 for iOS, irETGpoJjG57rrSC for Android'''
+    authorization_key = 'AIcaqRff3zdCyoBT'
     
-    user_agent = 'Quizduell A 1.3.2'
+    user_agent = '1.4.9'
     
-    device_type = 'a'
+    device_type = 'apl'
 
     timeout = 20000
     
@@ -135,6 +135,7 @@ class QuizduellApi(object):
             }
         }
 
+        @warning: Raises "HTTP Error 404: Not Found" while show is inactive!
         @rtype: json.json
         '''
         return self._request('/tv/create_tv_user', {})
@@ -590,13 +591,35 @@ class QuizduellApi(object):
         }
         return self._request('/games/upload_round_answers', data)   
     
+    @classmethod 
+    def _scramble_authorization_code(cls, data, key, reverse):
+        result = ""
+        reverse += 1
+        l = int(len(data) / key)
+        if l > 0:
+            if reverse % 2 == 0:
+                result += cls._scramble_authorization_code(data[l:], key, reverse)
+                result += cls._scramble_authorization_code(data[:l], key, reverse)
+            else:
+                result += cls._scramble_authorization_code(data[:l], key, reverse)
+                result += cls._scramble_authorization_code(data[l:], key, reverse)
+            return result
+        return data
+                                                                               
     @classmethod
     def _get_authorization_code(cls, url, client_date, post_params=None):
         msg = 'https://' + cls.host_name + url + client_date
+        
         if post_params:
             msg += ''.join(sorted(post_params.values()))
         
+        msg = re.sub(r'[^-abefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRSTUXYZ012346789 ,.()]', '', msg)
+       
+        for key in [2, 3, 5]:
+            msg = cls._scramble_authorization_code(msg, key, 0);
+        
         dig = hmac.new(cls.authorization_key, msg=msg, digestmod=hashlib.sha256)
+
         return base64.b64encode(dig.digest()).decode()
         
     def _request(self, url, post_params=None):

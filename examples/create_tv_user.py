@@ -9,5 +9,6 @@ if 'popup_mess' in user:
     exit()
 
 # Instantiation of the Quizduell TV API from authenticated Quizduell API:
+# Raises "HTTP Error 404: Not Found" while show is inactive!
 tv_api = quizduell.QuizduellTvApi.fromQuizduellApi(api)
 tv_api.agree_agbs()
