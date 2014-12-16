@@ -19,8 +19,8 @@ class QuizduellApi(object):
     endorsed by FEO Media AB.
     '''
     
-    host_name = 'qkgermany.feomedia.se'
-    ''' Also try qkgermany.appspot.com. Each country uses a different host'''
+    host_name = 'qkgermany.appspot.com'
+    ''' Also try qkgermany.feomedia.se. Each country uses a different host'''
         
     authorization_key = 'AIcaqRff3zdCyoBT'
     
@@ -576,7 +576,7 @@ class QuizduellApi(object):
         
         @type game_id: int or str
         
-        @param answers: 3 or 6 values in {0,1,2,3} with 0 being correct
+        @param answers: 3 or 6 values in {0,1,2,3,8,9} with 0 being correct
         @type answers: array of int or str
         
         @param category_id: value in {0,1,2}
