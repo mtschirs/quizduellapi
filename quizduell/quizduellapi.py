@@ -20,14 +20,21 @@ class QuizduellApi(object):
     '''
     
     host_name = 'qkgermany.appspot.com'
-    ''' Also try qkgermany.feomedia.se. Each country uses a different host'''
-        
+    ''' Each country uses a different host and authorization key'''
+
     authorization_key = 'AIcaqRff3zdCyoBT'
+    ''' Each country uses a different host and authorization key'''
     
-    user_agent = '1.4.9'
+    user_agent = 'Quizduell A gzip 1.7.8'
     
     device_type = 'apl'
-
+    
+    device_info = ''
+    ''' optional, e.g. motorola|Moto X|18 '''
+    
+    android_id = ''
+    ''' optional, e.g. e13d21e1-de6c-4bcd-b567-1eff1279b331 '''
+    
     timeout = 20000
     
     password_salt = 'SQ2zgOTmQc8KXmBP'
@@ -92,7 +99,7 @@ class QuizduellApi(object):
             'pwd': hashlib.md5(self.password_salt + unicode(password).encode('utf-8')).hexdigest()
         }
         return self._request('/users/login', data)
-        
+    
     def update_user(self, name, password, email=None):
         '''
         Updates an existing Quizduell user. The user will automatically be
@@ -116,7 +123,7 @@ class QuizduellApi(object):
             data['email'] = unicode(email).encode('utf-8')
         
         return self._request('/users/update_user', data)
-
+    
     def create_tv_user(self):
         '''
         Creates a TV user profile for this Quizduell user. Returns the following
@@ -134,7 +141,7 @@ class QuizduellApi(object):
                 "user_id": "..."
             }
         }
-
+        
         @warning: Raises "HTTP Error 404: Not Found" while show is inactive!
         @rtype: json.json
         '''
@@ -248,7 +255,7 @@ class QuizduellApi(object):
                     "your_turn": ...
             }, ...]
         }
-
+        
         @type game_ids: array of int or str
         @rtype: json.json
         '''
@@ -302,8 +309,7 @@ class QuizduellApi(object):
     
     def forgot_password(self, email):
         '''
-        Send a mail with a password restore link. The message will be visible
-        in all games against the same opponent. Returns the following JSON
+        Send a mail with a password restore link. Returns the following JSON
         structure on success:
         {
             "popup_mess": "Eine E-Mail ... wurde an deine E-Mail gesendet", 
@@ -556,10 +562,10 @@ class QuizduellApi(object):
     
     def upload_round_answers(self, game_id, answers, category_id):
         '''
-        Upload answers and the chosen category to an active game. The number of
-        answers depends on the game state and is 3 for the first player in the
-        first round and the last player in the last round, otherwise 6.
-        Returns the following JSON structure on success:
+        Upload answers and the chosen category to an active game. Answers are
+        numerical with 0 for the correct answer. The number of answers to send
+        is initially 3 for the first and 6 for the second player and increases
+        by 6 each round. Returns the following JSON structure on success:
         {
           "game": {
             "your_answers": [...],
@@ -576,7 +582,7 @@ class QuizduellApi(object):
         
         @type game_id: int or str
         
-        @param answers: 3 or 6 values in {0,1,2,3,8,9} with 0 being correct
+        @param answers: values in {0,1,2,3,8,9} with 0 being correct
         @type answers: array of int or str
         
         @param category_id: value in {0,1,2}
@@ -605,7 +611,7 @@ class QuizduellApi(object):
                 result += cls._scramble_authorization_code(data[l:], key, reverse)
             return result
         return data
-                                                                               
+    
     @classmethod
     def _get_authorization_code(cls, url, client_date, post_params=None):
         msg = 'https://' + cls.host_name + url + client_date
@@ -614,19 +620,21 @@ class QuizduellApi(object):
             msg += ''.join(sorted(post_params.values()))
         
         msg = re.sub(r'[^-abefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRSTUXYZ012346789 ,.()]', '', msg)
-       
+        
         for key in [2, 3, 5]:
             msg = cls._scramble_authorization_code(msg, key, 0);
         
         dig = hmac.new(cls.authorization_key, msg=msg, digestmod=hashlib.sha256)
-
-        return base64.b64encode(dig.digest()).decode()
         
+        return base64.b64encode(dig.digest()).decode()
+    
     def _request(self, url, post_params=None):
         client_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
         self._opener.addheaders = [
            ('dt', self.device_type),
+           ('device-info', self.device_info),
+           ('android-id', self.android_id),
            ('authorization', self._get_authorization_code(url, client_date, post_params)),
            ('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8'),
            ('User-Agent', self.user_agent),

@@ -41,7 +41,7 @@ class QuizduellTvApi(object):
             urllib2.HTTPHandler(debuglevel=0),
             urllib2.HTTPSHandler(debuglevel=0)
         )
-
+    
     @classmethod
     def fromQuizduellApi(cls, quizduell_api):
         '''
@@ -134,7 +134,7 @@ class QuizduellTvApi(object):
     
     def send_response(self, question_id, answer_id):
         return self._request('/users/' + self._user_id + '/response/' + question_id + '/' + answer_id)
-
+    
     def select_category(self, category_id):
         return self._request('/users/' + self._user_id + '/category/' + category_id)
     
@@ -147,7 +147,7 @@ class QuizduellTvApi(object):
             "Interval": 2, 
             "Meta": {
                 "NextShowDate": 1491850020
-            }, 
+            },
             "ShowId": "1", 
             "State": "show.countdown", 
             "Status": 200
@@ -156,7 +156,7 @@ class QuizduellTvApi(object):
         return self._request('/states/' + self._user_id)
     
     def _request(self, url, method='GET', data=None, urlencode=True):
-    
+        
         request = urllib2.Request('https://' + self.host_name + url)
         request.add_header('x-app-request', self.app_request)
         request.add_header('x-tv-authtoken', self._tv_auth_token)
